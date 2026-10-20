@@ -1,5 +1,6 @@
 import argparse
-from prompt_toolkit import print_formatted_text, prompt, HTML
+
+from prompt_toolkit import prompt, HTML
 from prompt_toolkit.completion import WordCompleter
 
 from llm import ask_llm
@@ -14,6 +15,11 @@ travel_completer = WordCompleter([
     "Estimate daily budget in Amsterdam",
 ], ignore_case=True)
 
+
+def run_assistant(user_prompt: str) -> str:
+    return ask_llm(user_prompt)
+
+
 def main():
     parser = argparse.ArgumentParser(description="Travel Assistant")
     parser.add_argument("prompt", type=str, nargs="?", help="User travel query prompt")
@@ -25,10 +31,8 @@ def main():
         user_prompt = args.prompt
 
     print("\n=== Travel Assistant ===\n")
-    response = ask_llm(
-        user_prompt,
-    )
-    print_formatted_text(format_response(response))
+    response = run_assistant(user_prompt)
+    format_response(response)
     print("\n")
 
 if __name__ == "__main__":
