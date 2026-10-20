@@ -34,6 +34,9 @@ def main():
         user_prompt = args.prompt
 
     print("\n=== Travel Assistant ===\n")    
+    # The ADK runner needs to wait for the model and tools to reply.
+    # asyncio.run() starts the async work from this regular, synchronous main() function.
+    # eg: send prompt -> wait for model/tool replies -> get response -> show it.
     response = asyncio.run(run_assistant(user_prompt))
     format_response(response)
     print("\n\n")

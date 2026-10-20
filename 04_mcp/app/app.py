@@ -61,7 +61,7 @@ def main():
     else:
         user_prompt = args.prompt
 
-    print("\n=== Travel Assistant ===\n")    
+    print("\n=== Travel Assistant ===\n")
     response = asyncio.run(run_assistant(user_prompt))
     format_response(response)
     print("\n\n")
