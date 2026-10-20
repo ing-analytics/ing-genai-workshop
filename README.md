@@ -5,6 +5,8 @@ Practical exercises for the GenAI Workshop run by ING Analytics
 
 ## Setup
 
+Use Python 3.11 or newer.
+
 1. Configure Google authentication and project access from One Day Sandbox
 
 ```bash
