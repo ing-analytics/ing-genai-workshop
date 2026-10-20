@@ -1,8 +1,10 @@
+import os
+
 from google import genai
 from google.genai.types import GenerateContentConfig
 
 
-PROJECT_ID = ""  # <-- Replace with your project ID
+PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT")
 LOCATION = "europe-west4"
 MODEL_NAME = "gemini-2.5-flash"
 

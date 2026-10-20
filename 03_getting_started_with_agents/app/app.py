@@ -1,4 +1,5 @@
 import argparse
+import asyncio
 from prompt_toolkit import prompt, HTML
 from prompt_toolkit.completion import WordCompleter
 
@@ -14,6 +15,14 @@ travel_completer = WordCompleter([
     "Estimate daily budget in Amsterdam",
 ], ignore_case=True)
 
+
+async def run_assistant(user_prompt: str) -> str:
+    return await ask_agent(
+        user_prompt,
+        tools=[get_weather, search_flights],
+    )
+
+
 def main():
     parser = argparse.ArgumentParser(description="Travel Assistant")
     parser.add_argument("prompt", type=str, nargs="?", help="User travel query prompt")
@@ -25,10 +34,7 @@ def main():
         user_prompt = args.prompt
 
     print("\n=== Travel Assistant ===\n")    
-    response = ask_agent(
-        user_prompt,
-        tools=[get_weather, search_flights],
-    )
+    response = asyncio.run(run_assistant(user_prompt))
     format_response(response)
     print("\n\n")
 

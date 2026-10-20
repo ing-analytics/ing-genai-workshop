@@ -1,4 +1,4 @@
-import asyncio
+import os
 import uuid
 
 from google.adk.agents import Agent
@@ -6,12 +6,16 @@ from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.genai import types
 
-PROJECT_ID = ""  # <-- Replace with your project ID
+
 LOCATION = "europe-west4"
 MODEL_NAME = "gemini-2.5-flash"
 
+os.environ.setdefault("GOOGLE_GENAI_USE_VERTEXAI", "true")
+os.environ.setdefault("GOOGLE_CLOUD_LOCATION", LOCATION)
+
 APP_NAME = "Travel-Assistant"
 USER_ID = "workshop-user"
+
 
 # Set a default system message for the model
 SYSTEM_MESSAGE = """
@@ -22,37 +26,45 @@ SYSTEM_MESSAGE = """
 """
 
 
-def ask_agent(
+async def ask_agent(
     prompt: str,
     tools: list | None = None,
 ) -> str:
-    """Send a prompt to the agent and return the text response."""
-    return asyncio.run(_ask_agent(prompt=prompt, tools=tools))
-
-
-async def _ask_agent(
-    prompt: str,
-    tools: list | None = None,
-) -> str:
-    # TODO: Create an Agent
-    agent = Agent(None)
+    """Run an ADK agent turn and return its final response text."""
+    # ADK's runner is async; this also lets MCP tools share the app's event loop.
+    agent = Agent(
+        name="Travel Assistant",
+        model=MODEL_NAME,
+        instruction=SYSTEM_MESSAGE,
+        tools=tools or [],
+    )
 
     session_service = InMemorySessionService()
     session_id = str(uuid.uuid4())
+
     await session_service.create_session(
         app_name=APP_NAME,
         user_id=USER_ID,
         session_id=session_id,
     )
 
-    # TODO: Create the runner that will execute the agent
-    runner = Runner(None)
+    runner = Runner(
+        app_name=APP_NAME,
+        agent=agent,
+        session_service=session_service,
+    )
 
-    # TODO: Wrap the user prompt in a Content message
-    message = types.Content(None)
+    message = types.Content(
+        role="user",
+        parts=[types.Part(text=prompt)],
+    )
 
-    # TODO: Iterate through the agent events and return the final response
-    async for event in runner.run_async(None):
-        pass
+    async for event in runner.run_async(user_id=USER_ID, session_id=session_id, new_message=message):
+        if event.is_final_response() and event.content and event.content.parts:
+            return "\n".join(
+                part.text
+                for part in event.content.parts
+                if part.text
+            )
 
     return ""

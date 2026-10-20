@@ -74,8 +74,8 @@ def get_server_info() -> dict:
     """Return basic information about this MCP server."""
     return {
         "name": "Travel MCP Server",
-        "purpose": "Demo server exposing flight search tools",
-        "tools": ["search_flights"],
+        "purpose": "Demo server exposing mock flight search tools",
+        "tools": ["search_flights", "list_available_flight_routes"],
     }
 
 
@@ -88,10 +88,11 @@ def search_flights(origin: str, destination: str) -> list:
 
     return FLIGHT_DATA.get(route, [])
 
-# TODO: Create and add your own tool here.
-# Don't forget to add it to the server info tool above so agents can discover it!
-def add_your_own_tool():
-    pass
+
+@mcp.tool()
+def list_available_flight_routes() -> list[str]:
+    """List the routes available in the mock flight data."""
+    return sorted(FLIGHT_DATA)
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-import asyncio
+import os
 import uuid
 
 from google.adk.agents import Agent
@@ -7,9 +7,11 @@ from google.adk.sessions import InMemorySessionService
 from google.genai import types
 
 
-PROJECT_ID = ""  # <-- Replace with your project ID
 LOCATION = "europe-west4"
 MODEL_NAME = "gemini-2.5-flash"
+
+os.environ.setdefault("GOOGLE_GENAI_USE_VERTEXAI", "true")
+os.environ.setdefault("GOOGLE_CLOUD_LOCATION", LOCATION)
 
 APP_NAME = "Travel-Assistant"
 USER_ID = "workshop-user"
@@ -24,19 +26,12 @@ SYSTEM_MESSAGE = """
 """
 
 
-def ask_agent(
+async def ask_agent(
     prompt: str,
     tools: list | None = None,
 ) -> str:
-    """Send a prompt to the agent and return the text response."""
-    return asyncio.run(_ask_agent(prompt=prompt, tools=tools))
-
-
-async def _ask_agent(
-    prompt: str,
-    tools: list | None = None,
-) -> str:
-
+    """Run an ADK agent turn and return its final response text."""
+    # ADK's runner is async; this also lets MCP tools share the app's event loop.
     agent = Agent(
         name="Travel Assistant",
         model=MODEL_NAME,
@@ -44,7 +39,6 @@ async def _ask_agent(
         tools=tools or [],
     )
 
-    # Set up session management for the agent
     session_service = InMemorySessionService()
     session_id = str(uuid.uuid4())
 
@@ -54,20 +48,17 @@ async def _ask_agent(
         session_id=session_id,
     )
 
-    # Create a runner to execute the agent
     runner = Runner(
         app_name=APP_NAME,
         agent=agent,
         session_service=session_service,
     )
 
-    # Format the user prompt as a message
     message = types.Content(
         role="user",
         parts=[types.Part(text=prompt)],
     )
 
-    # Run the agent
     async for event in runner.run_async(user_id=USER_ID, session_id=session_id, new_message=message):
         if event.is_final_response() and event.content and event.content.parts:
             return "\n".join(
