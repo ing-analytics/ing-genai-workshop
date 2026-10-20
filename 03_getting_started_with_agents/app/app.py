@@ -1,4 +1,6 @@
 import argparse
+import asyncio
+
 from prompt_toolkit import prompt, HTML
 from prompt_toolkit.completion import WordCompleter
 
@@ -14,6 +16,14 @@ travel_completer = WordCompleter([
     "Estimate daily budget in Amsterdam",
 ], ignore_case=True)
 
+
+async def run_assistant(user_prompt: str) -> str:
+    return await ask_agent(
+        user_prompt,
+        tools=[get_weather, search_flights],
+    )
+
+
 def main():
     parser = argparse.ArgumentParser(description="Travel Assistant")
     parser.add_argument("prompt", type=str, nargs="?", help="User travel query prompt")
@@ -24,11 +34,11 @@ def main():
     else:
         user_prompt = args.prompt
 
-    print("\n=== Travel Assistant ===\n")    
-    response = ask_agent(
-        user_prompt,
-        tools=[get_weather, search_flights],
-    )
+    print("\n=== Travel Assistant ===\n")
+    # The ADK runner needs to wait for the model and tools to reply.
+    # asyncio.run() starts the async work from this regular, synchronous main() function.
+    # Example: send prompt -> wait for model/tool replies -> get response -> show it.
+    response = asyncio.run(run_assistant(user_prompt))
     format_response(response)
     print("\n\n")
 
