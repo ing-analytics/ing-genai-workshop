@@ -1,11 +1,15 @@
 import argparse
+from pathlib import Path
 
+from dotenv import load_dotenv
 from prompt_toolkit import prompt, HTML
 from prompt_toolkit.completion import WordCompleter
 
 from llm import ask_llm
 from utils import format_response
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
+load_dotenv(REPO_ROOT / ".env")
 
 # Example travel topics for autocompletion
 travel_completer = WordCompleter([

@@ -3,6 +3,7 @@ import asyncio
 import sys
 from pathlib import Path
 
+from dotenv import load_dotenv
 from google.adk.tools.mcp_tool.mcp_toolset import McpToolset
 from google.adk.tools.mcp_tool.mcp_session_manager import StdioConnectionParams
 from mcp import StdioServerParameters
@@ -12,6 +13,9 @@ from prompt_toolkit.completion import WordCompleter
 from agent import ask_agent
 from tools import get_weather
 from utils import format_response
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+load_dotenv(REPO_ROOT / ".env")
 
 # Example travel topics for autocompletion
 travel_completer = WordCompleter([
