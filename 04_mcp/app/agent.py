@@ -13,7 +13,7 @@ MODEL_NAME = "gemini-2.5-flash"
 os.environ.setdefault("GOOGLE_GENAI_USE_VERTEXAI", "true")
 os.environ.setdefault("GOOGLE_CLOUD_LOCATION", LOCATION)
 
-APP_NAME = "Travel-Assistant"
+APP_NAME = "Travel_Assistant"
 USER_ID = "workshop-user"
 
 
@@ -33,7 +33,7 @@ async def ask_agent(
     """Run one ADK agent turn and return its final response text."""
     # ADK's runner is async; this also lets MCP tools share the app's event loop.
     agent = Agent(
-        name="Travel Assistant",
+        name=APP_NAME,
         model=MODEL_NAME,
         instruction=SYSTEM_MESSAGE,
         tools=tools or [],

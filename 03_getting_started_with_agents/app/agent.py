@@ -13,7 +13,7 @@ MODEL_NAME = "gemini-2.5-flash"
 os.environ.setdefault("GOOGLE_GENAI_USE_VERTEXAI", "true")
 os.environ.setdefault("GOOGLE_CLOUD_LOCATION", LOCATION)
 
-APP_NAME = "Travel-Assistant"
+APP_NAME = "Travel_Assistant"
 USER_ID = "workshop-user"
 
 
