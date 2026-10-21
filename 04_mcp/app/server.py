@@ -1,10 +1,13 @@
 import json
+import logging
 import sys
 from pathlib import Path
 
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 from mcp.server.fastmcp import FastMCP
+
+logging.getLogger("mcp.server.lowlevel.server").setLevel(logging.WARNING)
 
 mcp = FastMCP("Travel MCP Server")
 

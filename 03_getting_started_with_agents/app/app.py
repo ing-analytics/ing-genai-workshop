@@ -1,5 +1,6 @@
 import argparse
 import asyncio
+import warnings
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -12,6 +13,12 @@ from utils import format_response
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 load_dotenv(REPO_ROOT / ".env")
+
+warnings.filterwarnings(
+    "ignore",
+    message=r"\[EXPERIMENTAL\] feature FeatureName\..* is enabled\.",
+    category=UserWarning,
+)
 
 # Example travel topics for autocompletion
 travel_completer = WordCompleter([
