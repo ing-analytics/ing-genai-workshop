@@ -1,10 +1,13 @@
 import json
+import logging
 import sys
 from pathlib import Path
 
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 from mcp.server.fastmcp import FastMCP
+
+logging.getLogger("mcp.server.lowlevel.server").setLevel(logging.WARNING)
 
 mcp = FastMCP("Travel MCP Server")
 
@@ -75,6 +78,7 @@ def get_server_info() -> dict:
     return {
         "name": "Travel MCP Server",
         "purpose": "Demo server exposing flight search tools",
+        # TODO EXERCISE: Add the new tool's name to the tools list after implementing it.
         "tools": ["search_flights"],
     }
 
@@ -88,10 +92,9 @@ def search_flights(origin: str, destination: str) -> list:
 
     return FLIGHT_DATA.get(route, [])
 
-# TODO: Create and add your own tool here.
-# Don't forget to add it to the server info tool above so agents can discover it!
+# TODO EXERCISE: Implement and register one useful flight-related tool with @mcp.tool().
 def add_your_own_tool():
-    pass
+    raise NotImplementedError("Add and register your MCP tool.")
 
 
 if __name__ == "__main__":

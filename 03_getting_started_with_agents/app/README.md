@@ -13,5 +13,4 @@
 - Complete the ADK agent implementation in `agent.py`.
 
 #### Notes:
-- `llm.py` is included as a comparison path: it uses `google.genai` and `genai.client` to make a direct `client.models.generate_content(...)` call.
-- `agent.py` is the preferred approach in this folder because ADK is designed for tool-enabled agent workflows, with structured agent definitions, tool integration, and session-based execution.
+- This exercise uses Google ADK to define the agent, connect tools, and run a session.

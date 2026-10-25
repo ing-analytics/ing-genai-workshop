@@ -1,10 +1,24 @@
 import argparse
+import asyncio
+import warnings
+from pathlib import Path
+
+from dotenv import load_dotenv
 from prompt_toolkit import prompt, HTML
 from prompt_toolkit.completion import WordCompleter
 
 from agent import ask_agent
 from tools import get_weather, search_flights
 from utils import format_response
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+load_dotenv(REPO_ROOT / ".env")
+
+warnings.filterwarnings(
+    "ignore",
+    message=r"\[EXPERIMENTAL\] feature FeatureName\..* is enabled\.",
+    category=UserWarning,
+)
 
 # Example travel topics for autocompletion
 travel_completer = WordCompleter([
@@ -13,6 +27,14 @@ travel_completer = WordCompleter([
     "Find cheap flights to Tokyo",
     "Estimate daily budget in Amsterdam",
 ], ignore_case=True)
+
+
+async def run_assistant(user_prompt: str) -> str:
+    return await ask_agent(
+        user_prompt,
+        tools=[get_weather, search_flights],
+    )
+
 
 def main():
     parser = argparse.ArgumentParser(description="Travel Assistant")
@@ -24,11 +46,11 @@ def main():
     else:
         user_prompt = args.prompt
 
-    print("\n=== Travel Assistant ===\n")    
-    response = ask_agent(
-        user_prompt,
-        tools=[get_weather, search_flights],
-    )
+    print("\n=== Travel Assistant ===\n")
+    # The ADK runner needs to wait for the model and tools to reply.
+    # asyncio.run() starts the async work from this regular, synchronous main() function.
+    # Example: send prompt -> wait for model/tool replies -> get response -> show it.
+    response = asyncio.run(run_assistant(user_prompt))
     format_response(response)
     print("\n\n")
 

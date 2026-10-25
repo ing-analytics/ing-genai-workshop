@@ -1,10 +1,15 @@
 import argparse
-from prompt_toolkit import print_formatted_text, prompt, HTML
+from pathlib import Path
+
+from dotenv import load_dotenv
+from prompt_toolkit import prompt, HTML
 from prompt_toolkit.completion import WordCompleter
 
 from llm import ask_llm
 from utils import format_response
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
+load_dotenv(REPO_ROOT / ".env")
 
 # Example travel topics for autocompletion
 travel_completer = WordCompleter([
@@ -14,7 +19,12 @@ travel_completer = WordCompleter([
     "Estimate daily budget in Amsterdam",
 ], ignore_case=True)
 
-def main():
+
+def run_assistant(user_prompt: str) -> str:
+    return ask_llm(user_prompt)
+
+
+def main() -> None:
     parser = argparse.ArgumentParser(description="Travel Assistant")
     parser.add_argument("prompt", type=str, nargs="?", help="User travel query prompt")
     args = parser.parse_args()
@@ -25,10 +35,8 @@ def main():
         user_prompt = args.prompt
 
     print("\n=== Travel Assistant ===\n")
-    response = ask_llm(
-        user_prompt,
-    )
-    print_formatted_text(format_response(response))
+    response = run_assistant(user_prompt)
+    format_response(response)
     print("\n")
 
 if __name__ == "__main__":

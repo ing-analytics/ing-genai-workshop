@@ -1,8 +1,12 @@
 import argparse
+import asyncio
 import sys
+import warnings
 from pathlib import Path
 
-from google.adk.tools.mcp_tool.mcp_toolset import McpToolset, StdioConnectionParams
+from dotenv import load_dotenv
+from google.adk.tools.mcp_tool.mcp_toolset import McpToolset
+from google.adk.tools.mcp_tool.mcp_session_manager import StdioConnectionParams
 from mcp import StdioServerParameters
 from prompt_toolkit import prompt, HTML
 from prompt_toolkit.completion import WordCompleter
@@ -10,6 +14,15 @@ from prompt_toolkit.completion import WordCompleter
 from agent import ask_agent
 from tools import get_weather
 from utils import format_response
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+load_dotenv(REPO_ROOT / ".env")
+
+warnings.filterwarnings(
+    "ignore",
+    message=r"\[EXPERIMENTAL\] feature FeatureName\..* is enabled\.",
+    category=UserWarning,
+)
 
 # Example travel topics for autocompletion
 travel_completer = WordCompleter([
@@ -21,10 +34,17 @@ travel_completer = WordCompleter([
 
 SERVER_SCRIPT = Path(__file__).parent / "server.py"
 
-# TODO: Create a McpToolset instance for the MCP server
+# TODO EXERCISE: Configure McpToolset to launch SERVER_SCRIPT using sys.executable and StdioConnectionParams.
 mcp_tools = None
 
 local_tools = [get_weather]
+
+
+async def run_assistant(user_prompt: str) -> str:
+    # TODO EXERCISE: Discover and print MCP tools, then pass them with local_tools to ask_agent.
+    # TODO EXERCISE: Always close the MCP toolset, including when the agent call fails.
+    raise NotImplementedError("Complete the MCP app integration exercise.")
+
 
 def main():
     parser = argparse.ArgumentParser(description="Travel Assistant")
@@ -36,14 +56,8 @@ def main():
     else:
         user_prompt = args.prompt
 
-    print("\n=== Travel Assistant ===\n")    
-    response = ask_agent(
-        user_prompt,
-        tools=[
-            mcp_tools,
-            *local_tools,
-        ],
-    )
+    print("\n=== Travel Assistant ===\n")
+    response = asyncio.run(run_assistant(user_prompt))
     format_response(response)
     print("\n\n")
 
