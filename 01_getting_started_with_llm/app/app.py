@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 from prompt_toolkit import prompt, HTML
 from prompt_toolkit.completion import WordCompleter
 
-from llm import ask_llm
 from utils import format_response
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -21,6 +20,7 @@ travel_completer = WordCompleter([
 
 
 def run_assistant(user_prompt: str) -> str:
+    from llm import ask_llm
     return ask_llm(user_prompt)
 
 
