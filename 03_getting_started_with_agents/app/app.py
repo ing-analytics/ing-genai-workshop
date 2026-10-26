@@ -7,7 +7,6 @@ from dotenv import load_dotenv
 from prompt_toolkit import prompt, HTML
 from prompt_toolkit.completion import WordCompleter
 
-from agent import ask_agent
 from tools import get_weather, search_flights
 from utils import format_response
 
@@ -30,6 +29,7 @@ travel_completer = WordCompleter([
 
 
 async def run_assistant(user_prompt: str) -> str:
+    from agent import ask_agent
     return await ask_agent(
         user_prompt,
         tools=[get_weather, search_flights],
