@@ -11,7 +11,6 @@ from mcp import StdioServerParameters
 from prompt_toolkit import prompt, HTML
 from prompt_toolkit.completion import WordCompleter
 
-from agent import ask_agent
 from tools import get_weather
 from utils import format_response
 
@@ -41,6 +40,7 @@ local_tools = [get_weather]
 
 
 async def run_assistant(user_prompt: str) -> str:
+    from agent import ask_agent
     # TODO EXERCISE: Discover and print MCP tools, then pass them with local_tools to ask_agent.
     # TODO EXERCISE: Always close the MCP toolset, including when the agent call fails.
     raise NotImplementedError("Complete the MCP app integration exercise.")
