@@ -7,8 +7,8 @@ from google.adk.sessions import InMemorySessionService
 from google.genai import types
 
 
-LOCATION = "europe-west4"
-MODEL_NAME = "gemini-2.5-flash"
+LOCATION = os.getenv("GOOGLE_CLOUD_LOCATION")
+MODEL_NAME = os.getenv("GOOGLE_GENAI_MODEL")
 
 os.environ.setdefault("GOOGLE_GENAI_USE_VERTEXAI", "true")
 os.environ.setdefault("GOOGLE_CLOUD_LOCATION", LOCATION)
