@@ -5,8 +5,8 @@ from google.genai.types import GenerateContentConfig
 
 
 PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT")
-LOCATION = "europe-west4"
-MODEL_NAME = "gemini-2.5-flash"
+LOCATION = os.getenv("GOOGLE_CLOUD_LOCATION")
+MODEL_NAME = os.getenv("GOOGLE_GENAI_MODEL")
 
 
 client = genai.Client(vertexai=True, project=PROJECT_ID, location=LOCATION)
