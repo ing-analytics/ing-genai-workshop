@@ -9,10 +9,10 @@ Practical exercises for the GenAI Workshop run by ING Analytics
 
 1. On GitHub, select **Code > Codespaces > Create codespace on main** (or your workshop branch), and wait for setup to finish.
 2. The dev container installs Python 3.12, the Google Cloud CLI, the Python/Pylance/Jupyter extensions, and the workshop dependencies in `.venv`. New terminals use this environment automatically.
-3. Configure your workshop project and Google credentials in the terminal:
+3. Allow automatic tasks when VS Code prompts. The **Configure Google Cloud** task opens an interactive terminal on each workspace opening; enter your project ID and complete authentication there. You can also launch it using **Tasks: Run Task > Configure Google Cloud**, or run it manually:
 
 ```bash
-bash scripts/setup_gcloud.sh <PROJECT_ID>
+bash scripts/setup_gcloud.sh
 ```
 
 Follow the authentication links in the terminal in your browser. If a browser cannot open automatically, rerun the affected `gcloud auth` command with `--no-launch-browser` and follow its prompts.
