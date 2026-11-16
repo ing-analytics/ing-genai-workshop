@@ -4,18 +4,13 @@ set -euo pipefail
 
 PROJECT_ID="${1:-}"
 if [ -z "$PROJECT_ID" ]; then
-    echo "Usage: bash $0 <PROJECT_ID>"
-    exit 1
+    echo "Input your project ID:"
+    read -r PROJECT_ID
 fi
 echo "Using project ID: $PROJECT_ID"
 
 bash "$(dirname "${BASH_SOURCE[0]}")/install_gcloud.sh"
 export PATH="$HOME/google-cloud-sdk/bin:$PATH"
-
-# Set the active project explicitly
-echo "Setting active project to: $PROJECT_ID"
-gcloud config set project "$PROJECT_ID"
-
 
 # 0. Download the login config JSON from WIF (replace the following command with the actual download command if needed)
 echo "[0/3] Downloading one-day-sandbox-gcloud.json from WIF..."
@@ -28,6 +23,10 @@ gcloud auth login --login-config=one-day-sandbox-gcloud.json
 # 2. Re-login for ADC (Application Default Credentials)
 echo "[2/3] Logging in for Application Default Credentials..."
 gcloud auth application-default login --login-config=one-day-sandbox-gcloud.json
+
+# Set the active project explicitly
+echo "Setting active project to: $PROJECT_ID"
+gcloud config set project "$PROJECT_ID"
 
 # 3. Set quota project again
 echo "[3/3] Setting quota project..."
