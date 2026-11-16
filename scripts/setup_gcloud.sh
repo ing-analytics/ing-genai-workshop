@@ -4,7 +4,7 @@ set -euo pipefail
 
 PROJECT_ID="${1:-}"
 if [ -z "$PROJECT_ID" ]; then
-    echo "Input your project ID:"
+    echo "Input your GCP project ID and press Enter:"
     read -r PROJECT_ID
 fi
 echo "Using project ID: $PROJECT_ID"
@@ -35,7 +35,11 @@ gcloud auth application-default set-quota-project $(gcloud config get-value proj
 echo "Enabling required APIs..."
 gcloud services enable aiplatform.googleapis.com --project="$PROJECT_ID"
 
-echo "All authentication steps completed successfully."
+# Replace GOOGLE_CLOUD_PROJECT value in .env file:
+sed -i "s/^GOOGLE_CLOUD_PROJECT=.*/GOOGLE_CLOUD_PROJECT=$PROJECT_ID/" .env
+
+echo -e "\033[32mAll authentication steps completed successfully.\033[0m"
+
 
 # # 4. Revoke credentials after 24 hours (one day sandbox duration)
 # gcloud auth application-default revoke
