@@ -9,7 +9,7 @@ terraform.tfvars
 terraform/app/app.tfbackend
 .terraform*
 *.tfstate*
-
+one-day-sandbox-gcloud.json
 
 # C extensions
 *.so
