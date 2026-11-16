@@ -4,29 +4,13 @@ set -euo pipefail
 
 PROJECT_ID="${1:-}"
 if [ -z "$PROJECT_ID" ]; then
-    echo "Usage: bash $0 <PROJECT_ID>"
-    exit 1
+    echo "Input your GCP project ID and press Enter:"
+    read -r PROJECT_ID
 fi
 echo "Using project ID: $PROJECT_ID"
 
-# Install gcloud CLI if not already installed
-echo "Checking for gcloud CLI..."
-if command -v gcloud >/dev/null 2>&1; then
-    echo "gcloud CLI is already installed."
-else
-    echo "gcloud CLI not found. Installing..."
-    curl -sSL https://sdk.cloud.google.com | bash
-
-    export PATH="$HOME/google-cloud-sdk/bin:$PATH"
-
-    echo 'export PATH="$HOME/google-cloud-sdk/bin:$PATH"' >> ~/.bashrc
-    echo "gcloud CLI installed successfully."
-fi
-
-# Set the active project explicitly
-echo "Setting active project to: $PROJECT_ID"
-gcloud config set project "$PROJECT_ID"
-
+bash "$(dirname "${BASH_SOURCE[0]}")/install_gcloud.sh"
+export PATH="$HOME/google-cloud-sdk/bin:$PATH"
 
 # 0. Download the login config JSON from WIF (replace the following command with the actual download command if needed)
 echo "[0/3] Downloading one-day-sandbox-gcloud.json from WIF..."
@@ -40,6 +24,10 @@ gcloud auth login --login-config=one-day-sandbox-gcloud.json
 echo "[2/3] Logging in for Application Default Credentials..."
 gcloud auth application-default login --login-config=one-day-sandbox-gcloud.json
 
+# Set the active project explicitly
+echo "Setting active project to: $PROJECT_ID"
+gcloud config set project "$PROJECT_ID"
+
 # 3. Set quota project again
 echo "[3/3] Setting quota project..."
 gcloud auth application-default set-quota-project $(gcloud config get-value project)
@@ -47,7 +35,11 @@ gcloud auth application-default set-quota-project $(gcloud config get-value proj
 echo "Enabling required APIs..."
 gcloud services enable aiplatform.googleapis.com --project="$PROJECT_ID"
 
-echo "All authentication steps completed successfully."
+# Replace GOOGLE_CLOUD_PROJECT value in .env file:
+sed -i "s/^GOOGLE_CLOUD_PROJECT=.*/GOOGLE_CLOUD_PROJECT=$PROJECT_ID/" .env
+
+echo -e "\033[32mAll authentication steps completed successfully.\033[0m"
+
 
 # # 4. Revoke credentials after 24 hours (one day sandbox duration)
 # gcloud auth application-default revoke

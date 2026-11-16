@@ -1,7 +1,15 @@
+# Keep .vscode/tasks.json
+!.vscode/tasks.json
+!.vscode/settings.json
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
 *$py.class
+terraform.tfvars
+terraform/app/app.tfbackend
+.terraform*
+*.tfstate*
+
 
 # C extensions
 *.so
